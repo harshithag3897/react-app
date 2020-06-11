@@ -19,6 +19,7 @@ class Video extends React.Component {
       waiting: true,
       micState:true,
       camState:true,
+      showScreenshot: false
     };
   }
   videoCall = new VideoCall();
@@ -100,11 +101,24 @@ class Video extends React.Component {
   }
 
   takeScreenShot(){
-    const video = document.querySelector('video');
+    const video = document.querySelector('video#remoteVideo');
     const canvas = window.canvas = document.querySelector('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    this.setState({showScreenshot: true });
+  }
+
+  downloadImage(){
+    var element = document.querySelector('#download-screenshot');
+    var canvas = window.canvas = document.querySelector('canvas');
+    var image = canvas.toDataURL("image/jpg");
+    element.href = image;
+    this.setState({showScreenshot: false });
+  }
+
+  closeScreenshot(){
+    this.setState({showScreenshot: false });
   }
 
   getDisplay() {
@@ -164,6 +178,23 @@ class Video extends React.Component {
             ref={video => (this.localVideo = video)}
           />
         </div>
+        <div id='screenshot-wrapper'>
+          <canvas id='canvas' className={`${
+            this.state.showScreenshot ? '' : 'hide-screenshot'  }`}>
+          </canvas>
+          <a id="download-screenshot" download="screenShot.jpg" type="button" href="#" className={`${
+            this.state.showScreenshot ? 'button' : 'hide-screenshot'
+          }`} onClick={() => {
+            this.downloadImage()
+          }}>Download</a>
+
+          <button id="hide-screenshot" className={`${
+            this.state.showScreenshot ? 'button' : 'hide-screenshot'  }`} onClick={() => {
+              this.closeScreenshot()
+            }}>
+            Hide
+          </button>
+        </div>
         <video
           autoPlay
           className={`${
@@ -213,12 +244,13 @@ class Video extends React.Component {
             )
           }
         </button>
-        <button className='control-btn'
+        <button className={`${
+          this.state.connecting || this.state.waiting ? 'hide-screenshot' : 'control-btn'
+        }`}
         onClick={() => {
           this.takeScreenShot();
         }}
         ><ScreenShotIcon/></button>
-        <canvas></canvas>
         </div>
 
 
