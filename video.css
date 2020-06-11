@@ -13,6 +13,7 @@
   margin: 24px auto;
   display: inline-block;
   border-radius: 4px;
+  z-index: 1;
 }
 #canvas {
   height: 112px;
@@ -97,7 +98,6 @@
   }
   #screenshot-wrapper {
     height: 80px;
-    z-index: 1;
   }
   #canvas {
     height: 80px;
